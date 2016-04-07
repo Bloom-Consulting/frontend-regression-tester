@@ -3,7 +3,7 @@ var Nightmare = require('nightmare')
 var fs = require('fs')
 var _ = require('lodash')
 var vo = require('vo')
-
+var PNGDiff = require('png-diff')
 
 var urls = JSON.parse(fs.readFileSync(process.argv[2], 'utf-8'))
 
@@ -11,7 +11,7 @@ _.each(urls, function (url) {
   // screenshot(u, `#{u.split('index/')[1].replace(/\//g, '-')}.png`)
   var name_base = url.split('index/')[1].replace(/\//g, '-')
   name_base = name_base || "index"
-  var filename = name_base + (new Date()).getTime() + ".png"
+  var filename = name_base + '-' + (new Date()).getTime() + ".png"
 
   vo(run)(url, 'ss/' + filename, function() {
       console.log('done: ' + url)
