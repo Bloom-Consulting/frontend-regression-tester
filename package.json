@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Bloom-Consulting/frontend-regression-tester#readme",
   "dependencies": {
-    "nightmare": "^2.3.0"
+    "lodash": "^4.8.2",
+    "nightmare": "^2.3.0",
+    "vo": "^3.1.1"
   }
 }

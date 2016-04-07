@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+var Nightmare = require('nightmare')
+var fs = require('fs')
+var _ = require('lodash')
+var vo = require('vo')
+
+
+var urls = JSON.parse(fs.readFileSync(process.argv[2], 'utf-8'))
+
+_.each(urls, function (url) {
+  // screenshot(u, `#{u.split('index/')[1].replace(/\//g, '-')}.png`)
+  var name_base = url.split('index/')[1].replace(/\//g, '-')
+  name_base = name_base || "index"
+  var filename = name_base + (new Date()).getTime() + ".png"
+
+  vo(run)(url, 'ss/' + filename, function() {
+      console.log('done: ' + url)
+  })
+
+})
+
+function * run(url, filename) {
+    var nightmare = new Nightmare({
+        show: false,
+        width: 1024,
+        height: 768
+    })
+    var dimensions = yield nightmare.goto(url)
+        .wait('body')
+        .evaluate(function() {
+            var body = document.querySelector('body')
+            return {
+                height: body.scrollHeight,
+                width:body.scrollWidth
+            }
+        })
+
+    console.dir(dimensions)
+    yield nightmare.viewport(dimensions.width, dimensions.height)
+        .wait(1000)
+        .screenshot(require('path')
+            .join(__dirname, filename))
+
+    yield nightmare.end()
+}
